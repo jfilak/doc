@@ -97,9 +97,8 @@ Sleep then produces segmentation fault and should be caught
 by abrt's C/C++ hook. If it's not working correctly consult
 :ref:`debugging`.
 
-
 will-crash
-""""""""""
+^^^^^^^^^^
 
 For testing the functionality of various hooks we've created
 a set of crashing executables called ``will-crash`` [#willcrash]_.

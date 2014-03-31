@@ -71,6 +71,7 @@ BeakerLib Quick Reference [`PDF <https://fedorahosted.org/beakerlib/attachment/w
 
 It's always a good idea to copy one of the existing tests
 as a base for your test. Good candidates are:
+
  - ``run-abrtd`` which basically serves as an example,
  - ``ccpp-plugin`` if you need to test crash handling (if you require crash directory),
  - ``dbus-api`` if you need to test DBus functionality.
