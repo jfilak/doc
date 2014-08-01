@@ -243,6 +243,45 @@ too.
 
 .. _Augeas: http://augeas.net/
 
+Shortened Reporting
+-------------------
+
+Enables shortened GUI reporting where the reporting is interrupted
+after AutoreportingEvent is done. It means that the reporting is done
+when user clicks *"Report" button* on the notification buble. Upon that,
+ABRT uploads an uReport_ describing handled problem, shows
+a notification bubble stating that the problem has been reported and finishes.
+
+Shortened Reporting has no effect on the reporting process started from
+the GUI, because we wanted to allow advanced users to easily submit
+full bug report into Bugzilla. We believe that all users who care about
+detected crashes and open **Automatic Bug Reporting Tool** application to see
+them are advanced users.
+
+  ``Default value: Yes but only if application is running in GNOME desktop``
+
+To turn Shortened Reporting on open::
+
+  Automatic Bug Reporting Tool
+
+go to the application menu and click::
+
+  ABRT Configuration
+
+and turn on option::
+
+  Shortened Reporting
+
+Or manually edit file::
+
+  $HOME/.config/abrt/settings/abrt-applet.conf
+
+and add there the following line::
+
+  ShortenedReporting = yes
+
+.. _uReport: https://github.com/abrt/faf/wiki/uReport
+
 Automatic sensitive data filtering
 ----------------------------------
 
