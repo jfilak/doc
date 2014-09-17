@@ -473,6 +473,159 @@ events provided by the standard installation of ABRT:
     It is defined in the ``/etc/libreport/events.d/emergencyanalysis_event.conf``
     configuration file.
 
+Workflow configuration
+----------------------
+
+report-gtk and report-cli are tools that reports application crashes and other
+problems caught by abrtd daemon, or created by other programs using libreport.
+report-gtk and report-cli start EVENTs. There are two ways to specify an EVENTs
+to be performed. It can be specified either as a command line parameters
+(option -e EVENT) or in workflow files which are placed in
+``/usr/share/libreport/workflow/``. Every EVENT which is used in workflow must
+have defined the relevant xml file which is placed in
+``/usr/share/libreport/events``. This xml configuration file format is
+described in the following man page::
+
+        man report_event.conf
+
+Which of these workflow files will be used is defined in workflow configuration files
+placed in ``/etc/libreport/workflows.d/``.
+
+workflow file
+^^^^^^^^^^^^^
+Each file has XML formatting with the following DTD::
+
+        <!ELEMENT workflow    (name+,description+,priority?,events*)>
+        <!ELEMENT name        (#PCDATA)>
+        <!ATTLIST name         xml:lang CDATA #IMPLIED>
+        <!ELEMENT description (#PCDATA)>
+        <!ATTLIST description  xml:lang CDATA #IMPLIED>
+        <!ELEMENT priority =  (#PCDATA)>
+        <!ELEMENT events =    (event)+>
+        <!ELEMENT event =     (#PCDATA)>
+
+``name``
+    User visible name
+
+``description``
+    User visible description
+
+``priority``
+    Priority of the workflow. Higher number means a more visible place in
+    UI. If not provided, 0 is used.  The value is signed integer.
+
+``events``
+    List of executed events
+
+``event``
+    Name of event. If event is not applicable on the problem data or if it
+    is not defined then process continues with next event sibling.
+
+workflow configuration file
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The configuration file contains rules. Each rule starts with a line with a
+non-space leading character. Each rule consists of two parts, a name of EVENT
+and a CONDITION in following format::
+
+    EVENT=<WORKFLOW_NAME> [CONDITION]
+
+The CONDITION part contains conditions in one of the following forms::
+
+    VAR=VAL,
+
+    VAR!=VAL, or
+
+    VAL~=REGEX
+
+where:
+
+* ``VAR`` is a problem data directory
+        element (such as ``executable``, ``package``, ``hostname``, etc.),
+
+* ``VAL`` is a problem data element, and
+
+* ``REGEX`` is a regular expression.
+
+steps while loading the workflow
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+report-gtk or report-cli looks to the directory ``/etc/libreport/workflows.d/`` and
+goes trough all configuration files and all rules. All EVANT's names which
+satisfies the condition in these files are used as name of workflow (``<WORKFLOW_NAME>`` +
+'.xml') files placed in ``/usr/share/libreport/workflow/``. If there is
+only one workflow which corresponds with EVENTs names the reporter goes trough
+this file and execute every EVENTs which are defined in this workflow. If there
+are more then one workflows which corresponds with EVENTs names the reporter
+gives users a choose which one he want to use.
+
+To better understand the issue here is an example of creating workflow for
+mailx. The first step is a create a workflow configuration file in
+``/etc/libreport/workflows.d/`` with following content::
+
+    EVENT=workflow_mailx analyzer=CCpp
+
+It means that when analyzer is equal to CCpp, reporter trying to find
+``workflow_mailx.xml`` workflow in ``/usr/share/libreport/workflow/``.
+
+The other step is to create workflow called ``workflow_mailx.xml`` for example with
+following content::
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <workflow>
+        <name>Send the problem data via mailx</name>
+        <description>Analyze the problem locally and send information via mailx</description>
+        <priority>-99</priority>
+
+        <events>
+            <event>report_Mailx</event>
+        </events>
+    </workflow>
+
+It means the report-gtk or report-cli runs the event report_Mailx.
+The other step is to create the EVENT configuration file ``report_Mailx.xml``
+which corresponds with the ``report_Mailx`` EVENT from the ``workflow_mailx.xml``
+configuration file described above. The content of this file may be as follows::
+
+    <?xml version="1.0" encoding="UTF-8" ?>
+    <event>
+        <name>Mailx</name>
+        <description>Send via email</description>
+
+        <requires-items></requires-items>
+        <exclude-items-by-default>count,event_log,reported_to,coredump,vmcore</exclude-items-by-default>
+        <exclude-items-always></exclude-items-always>
+        <exclude-binary-items>no</exclude-binary-items>
+        <include-items-by-default></include-items-by-default>
+        <minimal-rating>0</minimal-rating>
+        <gui-review-elements>yes</gui-review-elements>
+
+        <options>
+            <option type="text" name="Mailx_Subject">
+                <label>Subject</label>
+                <allow-empty>no</allow-empty>
+                <description>Message subject</description>
+                <default-value>[abrt] detected a crash</default-value>
+            </option>
+            <option type="text" name="Mailx_EmailFrom">
+                <label>Sender</label>
+                <allow-empty>no</allow-empty>
+                <description>Sender's email</description>
+            </option>
+            <option type="text" name="Mailx_EmailTo">
+                <label>Recipient</label>
+                <allow-empty>no</allow-empty>
+                <description>Recipient's email</description>
+            </option>
+            <option type="bool" name="Mailx_SendBinaryData">
+                <label>Send Binary Data</label>
+                <description>Send binary files like coredump</description>
+                <default-value>no</default-value>
+            </option>
+        </options>
+    </event>
+
+
 Adjusting plugin configuration
 ------------------------------
 
