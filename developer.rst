@@ -36,3 +36,22 @@ common functions like ``_start`` from glibc or
 
 Such functions are listed in
 `satyr/lib/normalize.c <https://github.com/abrt/satyr/blob/master/lib/normalize.c>`_ file.
+
+Writing man pages
+-----------------
+
+Man pages file can be written in AsciiDoc and then translated into the classic
+man page format. Man pages in AsciiDoc format are stored in doc/ directory. For example
+for libreport are placed in libreport/doc/.
+
+To beter understand the issue, the following links shows man page written in Ascii::
+
+    http://www.methods.co.nz/asciidoc/asciidoc.1.txt
+
+The translated pages look as follows::
+
+    http://www.methods.co.nz/asciidoc/asciidoc.1.css-embedded.html
+
+or::
+
+    man asciidoc
