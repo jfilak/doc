@@ -16,27 +16,40 @@ To list all crashes on a machine run::
 
 Example output::
 
-        id 0cf6d4371062e5fc386d242d4fbafd29f4ee8102
-        Directory:      /var/tmp/abrt/ccpp-2013-12-27-13:55:34-24681
-        count:          45
-        executable:     /usr/bin/dzen2
-        package:        dzen2-0.8.5-13.20100104svn.fc20
-        time:           Fri 27 Dec 2013 01:55:34 PM CET
-        uid:            1000
-
-        id 57e6b30654ab84d516aae39ffa6fa266994fd633
-        Directory:      /var/tmp/abrt/Python-2014-01-23-17:43:03-28776
+        id 58101e309c3e473d49b1a7d60868ab7023a62dd6
+        reason:         will_abort killed by SIGABRT
+        time:           Wed 17 Sep 2014 03:24:07 AM CEST
+        cmdline:        will_abort
+        package:        will-crash-0.7-4.fc21
+        uid:            1000 (mhabrnal)
         count:          1
-        executable:     /usr/bin/gists
-        package:        gists-0.4.5-4.fc20
-        time:           Thu 23 Jan 2014 05:43:03 PM CET
-        uid:            1000
-        Reported:       https://retrace.fedoraproject.org/faf/reports/bthash/15cb1eb5b413a932201b1e7f53ac0abf0bc71e47
-                        https://bugzilla.redhat.com/show_bug.cgi?id=1057230
+        Directory:      /var/tmp/abrt/ccpp-2014-09-17-02:51:07-5368
 
+        id 58101e309c3e473d49b1a7d60868ab7023a62dd6
+        reason:         will_abort killed by SIGABRT
+        time:           Wed 17 Sep 2014 02:51:07 AM CEST
+        cmdline:        will_abort
+        package:        will-crash-0.7-4.fc21
+        uid:            1000 (mhabrnal)
+        count:          1
+        Directory:      /var/tmp/abrt/ccpp-2014-09-17-02:51:07-5368
+        Reported:       cannot be reported
 
-Displayed are two crashes collected by abrt. Each crash has an identifier
+        id afdf8c42ddeb324b975f3510f6e976085b46c4fe
+        reason:         will_segfault killed by SIGSEGV
+        time:           Tue 16 Sep 2014 11:12:09 PM CEST
+        cmdline:        will_segfault
+        package:        will-crash-0.7-4.fc21
+        uid:            1000 (mhabrnal)
+        count:          1
+        Directory:      /var/tmp/abrt/ccpp-2014-09-16-23:12:09-4265
+        Reported:       https://retrace.fedoraproject.org/faf/reports/bthash/102f484335e2df215da7a92d962d017e7d9edcc9
+                        https://bugzilla.redhat.com/show_bug.cgi?id=1124867
+
+Displayed are three crashes collected by abrt. Each crash has an identifier
 and a directory that can be used for further manipulation using ``abrt-cli``.
+The second crash (from the above example) cannot be reported. Run ``abrt-cli
+info -d $ID`` to see why the problem cannot be reported.
 
 To display detailed report about particular problem use::
 
@@ -48,7 +61,7 @@ To report a problem via ``abrt-cli`` use::
 
 To delete a problem run::
 
-        abrt-cli rm <ID_OR_PATH>
+        abrt-cli remove <ID_OR_PATH>
 
 For more details consult ``man abrt-cli``.
 
