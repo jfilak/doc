@@ -39,6 +39,7 @@ Contents
    resolv
    testsuite
    faq
+   examples
 
 
 
