@@ -134,4 +134,4 @@ bullet proof but produces really nice e-mail subject for C/Cpp problems:
 
 .. code:: bash
 
-    Mailx_Subject="[abrt] $(cat package || cat executable): $(cat crash_function && echo "():") $(cat reasonw || (cat executable && echo " crashed"))"
+    Mailx_Subject="[abrt] $(cat package || cat executable): $(cat crash_function && echo "():") $(cat reason || (cat executable && echo " crashed"))"
