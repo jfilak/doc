@@ -38,9 +38,9 @@ definition of ``notify`` and ``notify-dup`` events:
   general reporting workflow.
 
 Detected problem types can be divided into two groups based on availability of
-`backtrace` at the time of detection. The first group consists from Python,
+`backtrace` at the time of detection. The first group consists of Python,
 Kernel oops, Ruby and Java problem types where `backtrace` is available at
-the time of detection. The second group consists from CCpp (process crashes,
+the time of detection. The second group consists of CCpp (process crashes,
 C/Cpp) where `backtrace` must be extracted from a dump file.
 
 The default configuration of ``notify`` event is almost usable for the problem
