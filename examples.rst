@@ -135,3 +135,45 @@ bullet proof but produces really nice e-mail subject for C/Cpp problems:
 .. code:: bash
 
     Mailx_Subject="[abrt] $(cat package || cat executable): $(cat crash_function && echo "():") $(cat reason || (cat executable && echo " crashed"))"
+
+Getting core files from systemd-coredumctl
+------------------------------------------
+
+By default, ABRT detects crashes of native programs (C, C++) by its core dump
+helper which is registered in ``/proc/sys/kernel/core_pattern``. Unfortunately,
+there can be only one core pattern helper at the time so the ABRT core dump
+helper cannot coexists with `systemd-coredumctl`.
+
+However, the ABRT core dumper helper can be turned off and the ABRT
+`systemd-coredumpctl` watcher can be used to make ABRT notified of crashes of
+native programs.
+
+Everything you need to do is to disable `abrt-ccpp.service` which replaces the
+core_pattern configured via `sysctl` with the ABRT core pattern helper. If
+the service is running the core_pattern should start with
+``|/usr/libexec/abrt-hook-ccpp``.
+
+.. code:: bash
+
+    systemctl stop abrt-ccpp.service
+    systemctl disable abrt-ccpp.service
+
+Once you stop and disable the abrt-ccpp.service the core_pattern help should
+start with ``|/usr/lib/systemd/systemd-coredump``. If it does not, please
+check if the file ``/usr/lib/sysctl.d/50-coredump.conf`` exist and ensure that
+there is no other file containing ``kernel.core_pattern=`` (sysctl.d(5)).
+
+The last two things you need to do is to enable and start
+`abrt-journal-core.service`.
+
+.. code:: bash
+
+    systemctl enable abrt-journal-core.service
+    systemctl start abrt-journal-core.service
+
+The current version of `abrt-journal-core.service` needs to make copies of data
+that ABRT needs to be able to open a report in a bug tracking tool and leaves
+the `systemd-coredumpctl` data untouched. That means that you cannot use the
+ABRT journal core service to clean `systemd-coredumpctl` and you will end up
+having two copies of core files, one in `systemd-coredumpctl`'s storage and one
+in a sub-directory of ``/var/spool/abrt/``.
