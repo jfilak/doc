@@ -177,7 +177,7 @@ with reporting wizard.
 
 Event though ABRT notifies about problems of other users, it never uploads
 uReports for these problems automatically. The other user's problems are always
-processed in the way of processing problems with the autorepoting disabled,
+processed in the way of processing problems with the autoreporting disabled,
 which is described in the 2nd paragraph.
 
 In case of unavailable network, ABRT will postpone notification of the detected
@@ -248,7 +248,7 @@ Shortened Reporting
 
 Enables shortened GUI reporting where the reporting is interrupted
 after AutoreportingEvent is done. It means that the reporting is done
-when user clicks *"Report" button* on the notification buble. Upon that,
+when user clicks *"Report" button* on the notification bubble. Upon that,
 ABRT uploads an uReport_ describing handled problem, shows
 a notification bubble stating that the problem has been reported and finishes.
 
@@ -551,7 +551,7 @@ steps while loading the workflow
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 report-gtk or report-cli looks to the directory ``/etc/libreport/workflows.d/`` and
-goes trough all configuration files and all rules. All EVANT's names which
+goes trough all configuration files and all rules. All EVENT's names which
 satisfies the condition in these files are used as name of workflow (``<WORKFLOW_NAME>`` +
 '.xml') files placed in ``/usr/share/libreport/workflow/``. If there is
 only one workflow which corresponds with EVENTs names the reporter goes trough
