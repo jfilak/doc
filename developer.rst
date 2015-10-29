@@ -29,7 +29,7 @@ are avaialable at http://rmarko.fedorapeople.org/
 Ignoring common functions on the stack
 --------------------------------------
 
-To improve clustering of similar crashes done at
+To improve clustering of similar crashes done by
 :ref:`faf`, backtraces are first normalized to skip
 common functions like ``_start`` from glibc or
 ``__kernel_vsyscall`` from Linux kernel.
