@@ -77,7 +77,7 @@ crash reporting:
 
 3. Allow automatic uploads::
 
-        echo 'EVENT=post-create reporter-upload' >> /etc/libreport/events.d/uploader_event.conf
+        echo 'EVENT=notify reporter-upload' >> /etc/libreport/events.d/uploader_event.conf
 
 4. Observe logs on both machines and try to crash something. You can either use ``will_segfault``
    from ``will_crash`` package or just crash the ``sleep`` binary with the following commands::
