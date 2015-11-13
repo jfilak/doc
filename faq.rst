@@ -204,18 +204,19 @@ Possible values are:
    This is insecure as it allows regular users to examine the memory
    contents of privileged processes.
 
-2. (`suidsafe`) — any binary which normally would not be dumped is dumped
-   anyway, but only if the :ref:`core_pattern` kernel sysctl is set to
-   either a pipe handler or a fully qualified path. (For more details
-   on this limitation, see CVE-2006-2451.) This mode is appropriate
-   when administrators are attempting to debug problems in a normal
-   environment, and either have a core dump pipe handler that knows
-   to treat privileged core dumps with care, or specific directory
-   defined for catching core dumps. If a core dump happens without
-   a pipe handler or fully qualified path, a message will be emitted
-   to syslog warning about the lack of a correct setting.
+2. (`suidsafe`) — Any binary which normally would not be dumped (see "0"
+   above) is dumped readable by root only. This allows the user to remove the
+   core dump file but not to read it. For security reasons core dumps
+   in this mode will not overwrite one another or other files. This  mode
+   is appropriate when administrators are attempting to debug problems in a
+   normal environment.
+
+   Additionally, since Linux 3.6, /proc/sys/kernel/core_pattern must either be
+   an absolute pathname or a pipe command, as detailed in core(5). Warnings
+   will be written to the kernel log if core_pattern does not follow these
+   rules, and no core dump will be produced.
 
 Source:
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/sysctl/fs.txt
+http://man7.org/linux/man-pages/man5/proc.5.html
 
 
