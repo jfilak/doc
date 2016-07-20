@@ -177,3 +177,46 @@ the `systemd-coredumpctl` data untouched. That means that you cannot use the
 ABRT journal core service to clean `systemd-coredumpctl` and you will end up
 having two copies of core files, one in `systemd-coredumpctl`'s storage and one
 in a sub-directory of ``/var/spool/abrt/``.
+
+Collecting extra log files for crashes of a particular package
+--------------------------------------------------------------
+
+ABRT tries to provide people reading bug reports with as much information as
+possible. Good source of problem details can be log files. Hence, upon
+detection of a crashed process, ABRT goes through the system logs and copy lines
+looking related to the crashed process to a file called ``var_log_messages`` in
+the problem directory. The file can be found attached to bug reports opened by
+ABRT/libreport.
+
+However, application may not opt in for logging to system logs for various
+reasons. In such case, ABRT can be configured to copy log files to problem
+data directory and libreport will automatically attach them to bug reports.
+
+Let's assume we have a package called ``foo`` and we want to copy log files
+that are created in user's ``/var/run/`` directory. The application runs
+several concurrent processes and each of the processes writes debug messages to
+its own log file denoted by process' PID.
+
+To get these log files, we need to create a new libreport EVENT configuration
+file and instruct ABRT to run it after a crash of foo's executable appears. By
+default, ABRT runs ``post-create``, ``notify``, and ``notify-dup`` EVENTs upon
+new problem detection. We cannot use ``post-create`` because at that time
+package of crashed executable might not be known. ``notify-dup`` is not
+suitable because the event is executed for re-appearing problems, hence, the
+log files should be already captured. Therefore we must define new ``notify``
+EVENT.
+
+.. code:: bash
+
+    EVENT=notify pkg_name=foo
+        # Copy log files of crashed process to foo.log
+        cp /var/run/$(cat uid)/foo.$(cat pid).log foo.log
+
+The ``pkg_name=foo`` string tells ABRT to run the lines above for problems in
+any of executable shipped by the ``foo`` package. You can add as many such
+conditions as you need. The lines below the first line are interpreted by
+`/bin/sh` and current working directory contains all problem data captured by
+ABRT.
+
+The code must be placed in a file in the ``/etc/libreport/events.d/`` directory.
+Packages often follow the ``${package name}_event.conf`` rule for these files.
