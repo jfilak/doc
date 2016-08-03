@@ -65,6 +65,30 @@ Abrt's C/C++ hook overrides this with::
 which results in kernel calling ``abrt-hook-ccpp``. Detailed description
 can be found in the documentation of the Linux kernel [#corepattern]_.
 
+.. _debuginfo:
+
+debuginfo
+^^^^^^^^^
+
+To be able to get full featured GDB backtrace from a core dump file, debuginfo
+data must be available on the local file system. These data are usually
+provided in the form of installable packages, however, ABRT needs to allow
+non-privileged users to analyze the core dump file and report the
+obtained backtrace to bug tracking tool. Hence, ABRT maintains its own
+debuginfo directory ``/var/cache/abrt-di`` where all users can download and
+unpack the required debuginfo packages through
+``/usr/libexec/abrt-action-install-debuginfo-to-abrt-cache`` command line
+utility.
+
+Upon a new core dump file detection ABRT generates a list of build-ids
+(``XXYYYY..YYYY``) using ``eu-unstrip -n --core=coredump``. When a user decides
+to report the core dump file, the ABRT debuginfo tool goes through that list
+and remembers those build-ids for which
+``/usr/lib/debug/.build-id/XX/YYYY..YYYY.debug`` file does not exist in the
+system root directory or in the ABRT debuginfo directory. Finally, packages
+that provides the non-existing debug files are looked up in ``*debug*``
+repositories and are downloaded and unpacked to the ABRT debuginfo directory.
+
 .. _pyhook:
 
 Python hook
